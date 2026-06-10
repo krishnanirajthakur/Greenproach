@@ -1,0 +1,10 @@
+node_modules/
+tests/
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+package.json
+package-lock.json
+vitest.config.js
+README.md

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Greenproach - Understand, track, and reduce your carbon footprint through interactive actions, personalized insights, and simple simulations.">
+  <title>Greenproach | Carbon Footprint Tracker & Awareness Platform</title>
+  
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Favicon placeholder (SVG Leaf) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Main App Header -->
+    <header class="app-header">
+      <div class="logo" role="img" aria-label="Greenproach Logo">
+        <span class="icon" aria-hidden="true">🌿</span>
+        <span>Greenproach</span>
+      </div>
+      
+      <div class="controls-group">
+        <nav class="main-nav" aria-label="Primary Navigation">
+          <button id="nav-dashboard" class="active" aria-current="page">
+            <span>📊</span> Dashboard
+          </button>
+          <button id="nav-calculator">
+            <span>🧮</span> Calculator
+          </button>
+          <button id="nav-habits">
+            <span>✅</span> Habits
+          </button>
+          <button id="nav-insights">
+            <span>💡</span> Insights
+          </button>
+          <button id="nav-learn">
+            <span>📚</span> Learn
+          </button>
+        </nav>
+        
+        <button id="theme-toggle" class="icon-btn" aria-label="Toggle light and dark theme">
+          🌓
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-content" aria-live="polite">
+      
+      <!-- 1. DASHBOARD VIEW -->
+      <section id="view-dashboard" class="view-section active" aria-labelledby="dashboard-title">
+        <h1 id="dashboard-title" class="sr-only">Dashboard</h1>
+        
+        <div class="dashboard-grid">
+          <!-- Hero Card (Points, Badges, Level) -->
+          <div class="glass-card dashboard-hero-card">
+            <div class="hero-stats">
+              <h2 id="welcome-message">Welcome to Greenproach!</h2>
+              <p class="desc">Take a carbon footprint audit to generate personalized insights.</p>
+              <div class="badge-row" id="profile-badges-row">
+                <!-- Badges will be rendered here dynamically -->
+              </div>
+            </div>
+            
+            <div class="score-dial-container" aria-label="Total Annual Carbon Footprint Score">
+              <svg class="score-dial" viewBox="0 0 220 220">
+                <circle class="score-dial-bg" cx="110" cy="110" r="100" />
+                <circle id="score-fill" class="score-dial-fill" cx="110" cy="110" r="100" />
+              </svg>
+              <div class="score-dial-text">
+                <span id="score-value" class="score-number">0.0</span>
+                <span class="score-unit">t CO2e</span>
+                <span class="score-label">per year</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 1: Breakdown by Category -->
+          <div class="glass-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Footprint Breakdown</h3>
+              <span class="badge-pill" id="breakdown-total">0 kg total</span>
+            </div>
+            <div class="chart-container" id="category-chart-wrapper">
+              <!-- Custom Donut Chart will be generated here -->
+              <div class="score-label" id="no-chart-msg">Calculate your footprint to unlock your carbon breakdown.</div>
+            </div>
+          </div>
+
+          <!-- Chart 2: History Trend -->
+          <div class="glass-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Calculations History</h3>
+              <span class="badge-pill" id="history-count">0 logs</span>
+            </div>
+            <div class="chart-container" id="history-chart-wrapper">
+              <!-- Custom Bar Chart will be generated here -->
+              <div class="score-label" id="no-history-msg">Calculations log will display here.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. CALCULATOR VIEW -->
+      <section id="view-calculator" class="view-section" aria-labelledby="calc-title">
+        <div class="hero">
+          <h1 id="calc-title">Carbon Footprint Calculator</h1>
+          <p>Estimate your annual footprint based on transportation, energy, food, and shopping habits.</p>
+        </div>
+
+        <div class="glass-card calc-form">
+          <div class="calc-tabs" role="tablist" aria-label="Calculator Steps">
+            <button class="calc-tab active" role="tab" aria-selected="true" aria-controls="step-transport" id="tab-transport">
+              🚗 Transport
+            </button>
+            <button class="calc-tab" role="tab" aria-selected="false" aria-controls="step-energy" id="tab-energy" tabindex="-1">
+              ⚡ Energy
+            </button>
+            <button class="calc-tab" role="tab" aria-selected="false" aria-controls="step-food" id="tab-food" tabindex="-1">
+              🥗 Food
+            </button>
+            <button class="calc-tab" role="tab" aria-selected="false" aria-controls="step-lifestyle" id="tab-lifestyle" tabindex="-1">
+              🛍️ Lifestyle
+            </button>
+          </div>
+
+          <form id="footprint-form" novalidate>
+            <!-- Step 1: Transport -->
+            <div id="step-transport" class="form-step active" role="tabpanel" aria-labelledby="tab-transport">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-car-km">Annual Car Distance (km)</label>
+                  <input type="number" id="input-car-km" name="carKm" min="0" placeholder="e.g. 10000" aria-describedby="car-help">
+                  <span class="score-label" id="car-help">Total distance driven per year.</span>
+                </div>
+                
+                <div class="form-group">
+                  <label for="input-car-fuel">Car Fuel Type</label>
+                  <select id="input-car-fuel" name="carFuel">
+                    <option value="petrol">Petrol / Gasoline</option>
+                    <option value="diesel">Diesel</option>
+                    <option value="hybrid">Hybrid</option>
+                    <option value="electric">Electric (EV)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-bus-km">Bus Distance (km/year)</label>
+                  <input type="number" id="input-bus-km" name="busKm" min="0" placeholder="e.g. 1500">
+                </div>
+
+                <div class="form-group">
+                  <label for="input-train-km">Train Distance (km/year)</label>
+                  <input type="number" id="input-train-km" name="trainKm" min="0" placeholder="e.g. 3000">
+                </div>
+
+                <div class="form-group">
+                  <label for="input-flight-short">Short-haul Flights (hours/year)</label>
+                  <input type="number" id="input-flight-short" name="flightShort" min="0" placeholder="e.g. 10" aria-describedby="flight-short-help">
+                  <span class="score-label" id="flight-short-help">Flights under 3 hours each (e.g. domestic/regional).</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-flight-long">Long-haul Flights (hours/year)</label>
+                  <input type="number" id="input-flight-long" name="flightLong" min="0" placeholder="e.g. 20" aria-describedby="flight-long-help">
+                  <span class="score-label" id="flight-long-help">Flights over 3 hours each (e.g. continental/international).</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Energy -->
+            <div id="step-energy" class="form-step" role="tabpanel" aria-labelledby="tab-energy" hidden>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-electricity">Electricity Usage (kWh/month)</label>
+                  <input type="number" id="input-electricity" name="electricity" min="0" placeholder="e.g. 300" aria-describedby="elec-help">
+                  <span class="score-label" id="elec-help">Refer to your monthly utility bill.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-gas">Natural Gas Usage (kWh/month)</label>
+                  <input type="number" id="input-gas" name="gas" min="0" placeholder="e.g. 500" aria-describedby="gas-help">
+                  <span class="score-label" id="gas-help">Heating/cooking gas in kWh (or m3 * 11).</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-waste">Household Waste (kg/week)</label>
+                  <input type="number" id="input-waste" name="waste" min="0" placeholder="e.g. 15" aria-describedby="waste-help">
+                  <span class="score-label" id="waste-help">Average non-recycled waste thrown away per week.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-recycle">Recycling Rate (%)</label>
+                  <input type="number" id="input-recycle" name="recycleRate" min="0" max="100" placeholder="e.g. 40" aria-describedby="recycle-help">
+                  <span class="score-label" id="recycle-help">Percentage of paper, plastics, glass, and metal recycled.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Food -->
+            <div id="step-food" class="form-step" role="tabpanel" aria-labelledby="tab-food" hidden>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-diet">Primary Diet Style</label>
+                  <select id="input-diet" name="diet" aria-describedby="diet-help">
+                    <option value="high-meat">High Meat Consumer (daily beef/pork)</option>
+                    <option value="average">Average Meat Consumer (balanced poultry/fish/beef)</option>
+                    <option value="vegetarian">Vegetarian (no meat, eggs/dairy allowed)</option>
+                    <option value="vegan">Vegan (strictly plant-based)</option>
+                  </select>
+                  <span class="score-label" id="diet-help">Your diet type significantly affects greenhouse gas emissions.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Lifestyle -->
+            <div id="step-lifestyle" class="form-step" role="tabpanel" aria-labelledby="tab-lifestyle" hidden>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-clothing">New Clothing Purchases (items/year)</label>
+                  <input type="number" id="input-clothing" name="clothing" min="0" placeholder="e.g. 25" aria-describedby="clothing-help">
+                  <span class="score-label" id="clothing-help">Include fast fashion, jackets, shoes, etc.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-electronics">New Electronic Purchases (items/year)</label>
+                  <input type="number" id="input-electronics" name="electronics" min="0" placeholder="e.g. 3" aria-describedby="elec-buy-help">
+                  <span class="score-label" id="elec-buy-help">Smartphones, laptops, TVs, smart home equipment.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions Nav -->
+            <div class="form-actions">
+              <button type="button" id="btn-prev-step" class="btn btn-secondary" disabled>Back</button>
+              <button type="button" id="btn-next-step" class="btn btn-primary">Next</button>
+              <button type="submit" id="btn-submit-calc" class="btn btn-primary" style="display: none;">Calculate Footprint</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- 3. HABITS VIEW -->
+      <section id="view-habits" class="view-section" aria-labelledby="habits-title">
+        <div class="hero">
+          <h1 id="habits-title">Sustainable Habits Tracker</h1>
+          <p>Adopt daily carbon-saving habits, complete them regularly, and watch your eco-profile level up.</p>
+        </div>
+        
+        <div class="badge-row" style="margin-bottom: 32px; justify-content: center;">
+          <span class="badge-pill">🔥 Level <span id="level-display">1</span></span>
+          <span class="badge-pill">✨ Points: <span id="points-display">0</span></span>
+          <span class="badge-pill">🌳 Total Saved: <span id="lifetime-saved-display">0</span> kg CO2e</span>
+        </div>
+
+        <div class="habits-grid" id="habits-container">
+          <!-- Habits will be rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- 4. INSIGHTS VIEW -->
+      <section id="view-insights" class="view-section" aria-labelledby="insights-title">
+        <div class="hero">
+          <h1 id="insights-title">Personalized Insights & Scenarios</h1>
+          <p>Explore target areas and simulate change scenarios using interactive "What-If" sliders.</p>
+        </div>
+
+        <div class="insights-grid">
+          <!-- Insights List -->
+          <div class="glass-card">
+            <h2 style="margin-bottom: 20px;">Targeted Recommendations</h2>
+            <div class="insights-list" id="recommendations-container">
+              <!-- Recommends dynamically based on category emission metrics -->
+              <p class="score-label">Calculate your footprint to load dynamic insights.</p>
+            </div>
+          </div>
+
+          <!-- What-If Simulator -->
+          <div class="glass-card">
+            <h2 style="margin-bottom: 12px;">What-If Scenario Simulator</h2>
+            <p class="desc" style="margin-bottom: 24px;">Adjust variables below to see potential carbon footprint reductions in real-time.</p>
+            
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>🚗 Reduce Weekly Car Commutes</span>
+                <span class="slider-val" id="val-sim-car-commute">0 km saved</span>
+              </div>
+              <input type="range" class="custom-slider" id="sim-car-commute" min="0" max="250" value="0" aria-valuemin="0" aria-valuemax="250" aria-valuenow="0">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>🌱 Plant-Based Meals replacing Beef</span>
+                <span class="slider-val" id="val-sim-plant-meals">0 meals/week</span>
+              </div>
+              <input type="range" class="custom-slider" id="sim-plant-meals" min="0" max="21" value="0" aria-valuemin="0" aria-valuemax="21" aria-valuenow="0">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>🌡️ Thermostat Temperature Settings</span>
+                <span class="slider-val" id="val-sim-thermostat">No shift</span>
+              </div>
+              <input type="range" class="custom-slider" id="sim-thermostat" min="0" max="4" value="0" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>✈️ Avoid Flight Hours</span>
+                <span class="slider-val" id="val-sim-flights">0 hours saved</span>
+              </div>
+              <input type="range" class="custom-slider" id="sim-flights" min="0" max="30" value="0" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0">
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 24px; text-align: center;">
+              <div class="score-label" style="font-size: 0.9rem; margin-bottom: 6px;">Simulated Carbon Reduction:</div>
+              <div style="font-size: 2.2rem; font-family: var(--font-display); font-weight: 800; color: var(--accent);">
+                -<span id="sim-saved-total">0</span> kg CO2e / year
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. LEARN VIEW -->
+      <section id="view-learn" class="view-section" aria-labelledby="learn-title">
+        <div class="hero">
+          <h1 id="learn-title">Eco-Literacy Center</h1>
+          <p>Read about core climate concepts and test your carbon literacy with our interactive quiz.</p>
+        </div>
+
+        <div class="learn-grid">
+          <!-- Carbon Quiz -->
+          <div class="glass-card quiz-container" id="quiz-card">
+            <h3>Carbon Literacy Quiz</h3>
+            <div id="quiz-question-container">
+              <div class="quiz-question" id="quiz-question-text">
+                Which diet style generally has the lowest carbon footprint impact?
+              </div>
+              <div class="quiz-options" id="quiz-options-container">
+                <!-- Buttons will be rendered here dynamically -->
+              </div>
+            </div>
+            
+            <div id="quiz-score-container" style="display: none; text-align: center; padding: 24px 0;">
+              <span style="font-size: 3rem;">🏆</span>
+              <h4 style="font-size: 1.5rem; margin-top: 12px;">Quiz Completed!</h4>
+              <p class="desc" style="margin-bottom: 20px;">You scored <span id="quiz-score-text">0</span> out of 5.</p>
+              <button class="btn btn-primary" id="btn-restart-quiz">Retry Quiz</button>
+            </div>
+          </div>
+
+          <!-- Educational Resource Cards -->
+          <div class="edu-cards">
+            <div class="glass-card edu-card">
+              <h3><span>📊</span> Understanding Scope Emissions</h3>
+              <p>Greenhouse gases are grouped into three scopes: Scope 1 is direct emissions (like fuel in your car), Scope 2 is indirect emissions from bought energy (like home electricity), and Scope 3 covers all other value chain emissions (like manufacturing the products you buy).</p>
+            </div>
+
+            <div class="glass-card edu-card">
+              <h3><span>🌍</span> The Paris Agreement 2°C Target</h3>
+              <p>The global community agreed to limit warming to well below 2°C (ideally 1.5°C) compared to pre-industrial levels. To meet this, the average carbon footprint per person globally must fall below 2.0 tonnes of CO2e annually by 2050.</p>
+            </div>
+
+            <div class="glass-card edu-card">
+              <h3><span>🌳</span> Avoid, Reduce, and Offset</h3>
+              <p>The carbon mitigation hierarchy is clear: First, <strong>Avoid</strong> unnecessary emissions (walk instead of drive). Second, <strong>Reduce</strong> emissions that cannot be avoided (use public transit). Third, <strong>Offset</strong> residual emissions (by funding global reforestation or renewable projects).</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>&copy; 2026 Greenproach. Built with standard-compliant Vanilla JS, CSS, and HTML5.</p>
+      <p>Data values aligned with EPA &amp; DEFRA emission models. Strictly client-side privacy preserved.</p>
+    </footer>
+  </div>
+
+  <!-- App Core JS Modules -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
