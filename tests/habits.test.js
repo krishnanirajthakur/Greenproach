@@ -41,4 +41,10 @@ describe('Habits Recommendations Logic', () => {
     const transSuccess = lowTrans.insights.find(i => i.text.includes('moderate'));
     expect(transSuccess.type).toBe('success');
   });
+
+  test('returns exactly 4 recommended habits for calculated footprint results', () => {
+    const results = { transport: 1000, energy: 2000, food: 1500, lifestyle: 800, total: 5300 };
+    const recs = getRecommendations(results);
+    expect(recs.recommendedHabits.length).toBe(4);
+  });
 });

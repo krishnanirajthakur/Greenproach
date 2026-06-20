@@ -1,5 +1,23 @@
-// Carbon Footprint Calculation Engine (EPA & DEFRA based)
+/**
+ * @file calculator.js
+ * @description Carbon footprint calculation engine based on standard coefficients from the
+ * US EPA (Environmental Protection Agency) and UK DEFRA.
+ */
 
+/**
+ * Carbon emission factors (coefficients) in kg CO2e.
+ * @type {Object}
+ * @property {Object} car Fuel factors per kilometer
+ * @property {number} bus Bus factor per kilometer
+ * @property {number} train Train factor per kilometer
+ * @property {Object} flight Flight factors per flight hour
+ * @property {number} electricity Electricity factor per kWh
+ * @property {number} gas Natural gas factor per kWh
+ * @property {number} waste Landfill waste factor per kg
+ * @property {Object} diet Diet baselines per year
+ * @property {number} clothing Clothing purchase factor per item
+ * @property {number} electronics Electronics purchase factor per item
+ */
 export const EMISSION_FACTORS = {
   car: {
     petrol: 0.170,   // kg CO2e / km
@@ -27,9 +45,9 @@ export const EMISSION_FACTORS = {
 };
 
 /**
- * Calculates annual carbon footprint by category (in kg CO2e/year)
- * @param {Object} inputs User inputs
- * @returns {Object} Calculated footprints { transport, energy, food, lifestyle, total }
+ * Calculates annual carbon footprint by category (in kg CO2e/year).
+ * @param {Object} [inputs] User inputs representing transit km, flight hours, energy usage, food, and purchases
+ * @returns {Object} Calculated footprints containing category breakdown and overall total
  */
 export function calculateFootprint(inputs) {
   const safeInputs = inputs || {};

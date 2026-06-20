@@ -86,4 +86,30 @@ describe('Storage Driver Database API', () => {
     expect(res2.profile.badges).toContain('Carbon Fighter');
     expect(res2.profile.badges).not.toContain('Planet Guardian');
   });
+
+  test('handles corrupted localStorage JSON data gracefully without throwing', () => {
+    // Inject global window mock with throwing mock storage getters
+    const originalWindow = global.window;
+    global.window = {
+      localStorage: {
+        getItem: () => "invalid-json-string{",
+        setItem: () => {},
+        removeItem: () => {}
+      }
+    };
+
+    expect(db.getLatestInputs()).toBeNull();
+    expect(db.getLatestResults()).toBeNull();
+    expect(db.getFootprintHistory()).toEqual([]);
+    expect(db.getAdoptedHabits()).toEqual([]);
+    expect(db.getHabitCompletions()).toEqual({});
+    expect(db.getProfile().points).toBe(0); // should fall back to default profile
+
+    // Restore original window context
+    if (originalWindow) {
+      global.window = originalWindow;
+    } else {
+      delete global.window;
+    }
+  });
 });

@@ -82,4 +82,14 @@ describe('Carbon Calculator Formulas', () => {
     const res = calculateFootprint(inputs);
     expect(res.lifestyle).toBe(285);
   });
+
+  test('handles null or undefined inputs parameter gracefully', () => {
+    const resultNull = calculateFootprint(null);
+    expect(resultNull.food).toBe(EMISSION_FACTORS.diet.average);
+    expect(resultNull.total).toBe(EMISSION_FACTORS.diet.average);
+
+    const resultUndefined = calculateFootprint(undefined);
+    expect(resultUndefined.food).toBe(EMISSION_FACTORS.diet.average);
+    expect(resultUndefined.total).toBe(EMISSION_FACTORS.diet.average);
+  });
 });

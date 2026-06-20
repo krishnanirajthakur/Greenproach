@@ -37,6 +37,9 @@ const QUIZ_QUESTIONS = [
   }
 ];
 
+/**
+ * Initializes all user interface components, navigation hooks, themes, sliders, and the literacy quiz.
+ */
 export function initUI() {
   setupNavigation();
   setupTheme();
@@ -98,6 +101,9 @@ function setupTheme() {
 }
 
 // 2. Main Render Function
+/**
+ * Orchestrates a complete UI refresh, updating profiles, badge views, habits progress list, recommendations, and SVG charts.
+ */
 export function renderAll() {
   renderProfile();
   renderDashboardCharts();

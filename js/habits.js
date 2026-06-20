@@ -1,5 +1,19 @@
-// Habits Database and Recommendation Engine
+/**
+ * @file habits.js
+ * @description Curated database of sustainable lifestyle habits with carbon reduction values,
+ * and logic for generating personalized recommendation insights based on carbon footprint calculations.
+ */
 
+/**
+ * Array of predefined carbon-saving habits
+ * @type {Array<Object>}
+ * @property {string} id Unique identifier
+ * @property {string} title Readable action name
+ * @property {string} description Explanatory text
+ * @property {string} category Category classification
+ * @property {number} carbonSavedPerDay Estimated carbon saved per completion/day in kg CO2e
+ * @property {string} icon Emoji visual icon
+ */
 export const HABITS_DATABASE = [
   {
     id: 'bike_or_walk',
@@ -102,7 +116,7 @@ export const HABITS_DATABASE = [
 /**
  * Returns customized recommendations and carbon insights based on footprint results.
  * @param {Object} results Category footprints { transport, energy, food, lifestyle, total }
- * @returns {Object} Recommendations object containing primary category, specific advice, and custom lists
+ * @returns {Object} Recommendations object containing primary category, specific advice, habit list, and insights list
  */
 export function getRecommendations(results) {
   if (!results || results.total === 0) {

@@ -17,6 +17,7 @@
   --primary: hsl(150, 80%, 40%);
   --primary-rgb: 20, 184, 114;
   --primary-hover: hsl(150, 85%, 35%);
+  --btn-primary-text: hsl(222, 47%, 6%);
   --accent: hsl(180, 90%, 45%);
   --accent-glow: hsla(180, 90%, 45%, 0.15);
   
@@ -53,6 +54,7 @@
   --primary: hsl(150, 75%, 35%);
   --primary-rgb: 23, 156, 96;
   --primary-hover: hsl(150, 80%, 30%);
+  --btn-primary-text: #ffffff;
   --accent: hsl(185, 80%, 40%);
   --accent-glow: hsla(185, 80%, 40%, 0.1);
   
@@ -530,7 +532,7 @@ svg.custom-svg-chart {
 
 .btn-primary {
   background: var(--primary);
-  color: hsl(222, 47%, 6%);
+  color: var(--btn-primary-text);
 }
 
 .btn-primary:hover {
