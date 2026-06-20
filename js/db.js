@@ -52,18 +52,33 @@ export function saveLatestFootprint(inputs, results) {
 }
 
 export function getLatestInputs() {
-  const data = storage.getItem(KEYS.LATEST_INPUTS);
-  return data ? JSON.parse(data) : null;
+  try {
+    const data = storage.getItem(KEYS.LATEST_INPUTS);
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    console.error('Failed to parse latest inputs', e);
+    return null;
+  }
 }
 
 export function getLatestResults() {
-  const data = storage.getItem(KEYS.LATEST_RESULTS);
-  return data ? JSON.parse(data) : null;
+  try {
+    const data = storage.getItem(KEYS.LATEST_RESULTS);
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    console.error('Failed to parse latest results', e);
+    return null;
+  }
 }
 
 export function getFootprintHistory() {
-  const data = storage.getItem(KEYS.HISTORY);
-  return data ? JSON.parse(data) : [];
+  try {
+    const data = storage.getItem(KEYS.HISTORY);
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    console.error('Failed to parse footprint history', e);
+    return [];
+  }
 }
 
 export function saveAdoptedHabits(habits) {
@@ -71,8 +86,13 @@ export function saveAdoptedHabits(habits) {
 }
 
 export function getAdoptedHabits() {
-  const data = storage.getItem(KEYS.ADOPTED_HABITS);
-  return data ? JSON.parse(data) : [];
+  try {
+    const data = storage.getItem(KEYS.ADOPTED_HABITS);
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    console.error('Failed to parse adopted habits', e);
+    return [];
+  }
 }
 
 export function saveHabitCompletions(completions) {
@@ -83,8 +103,13 @@ export function saveHabitCompletions(completions) {
  * Returns object map of completions: { [habitId]: [dateStrings...] }
  */
 export function getHabitCompletions() {
-  const data = storage.getItem(KEYS.HABIT_COMPLETIONS);
-  return data ? JSON.parse(data) : {};
+  try {
+    const data = storage.getItem(KEYS.HABIT_COMPLETIONS);
+    return data ? JSON.parse(data) : {};
+  } catch (e) {
+    console.error('Failed to parse habit completions', e);
+    return {};
+  }
 }
 
 /**
@@ -112,7 +137,9 @@ export function completeHabit(habitId, pointsSaved) {
   // Update Profile Points and level
   const profile = getProfile();
   profile.points += 10; // 10 points per completion
-  profile.lifetimeCarbonSaved += pointsSaved;
+  
+  const savedVal = Number(pointsSaved) || 0;
+  profile.lifetimeCarbonSaved += savedVal;
 
   // Level up formula: Level = floor(sqrt(points / 50)) + 1
   const newLevel = Math.floor(Math.sqrt(profile.points / 50)) + 1;
@@ -134,9 +161,13 @@ export function completeHabit(habitId, pointsSaved) {
 }
 
 export function getProfile() {
-  const data = storage.getItem(KEYS.USER_PROFILE);
-  if (data) {
-    return JSON.parse(data);
+  try {
+    const data = storage.getItem(KEYS.USER_PROFILE);
+    if (data) {
+      return JSON.parse(data);
+    }
+  } catch (e) {
+    console.error('Failed to parse user profile', e);
   }
   
   // Default new profile

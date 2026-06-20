@@ -32,51 +32,52 @@ export const EMISSION_FACTORS = {
  * @returns {Object} Calculated footprints { transport, energy, food, lifestyle, total }
  */
 export function calculateFootprint(inputs) {
+  const safeInputs = inputs || {};
   // 1. Transportation
-  const carKm = Number(inputs.carKm) || 0;
-  const carFuel = inputs.carFuel || 'petrol';
+  const carKm = Number(safeInputs.carKm) || 0;
+  const carFuel = safeInputs.carFuel || 'petrol';
   const carFactor = EMISSION_FACTORS.car[carFuel] || EMISSION_FACTORS.car.petrol;
   const carEmissions = carKm * carFactor;
 
-  const busKm = Number(inputs.busKm) || 0;
+  const busKm = Number(safeInputs.busKm) || 0;
   const busEmissions = busKm * EMISSION_FACTORS.bus;
 
-  const trainKm = Number(inputs.trainKm) || 0;
+  const trainKm = Number(safeInputs.trainKm) || 0;
   const trainEmissions = trainKm * EMISSION_FACTORS.train;
 
-  const flightShort = Number(inputs.flightShort) || 0;
+  const flightShort = Number(safeInputs.flightShort) || 0;
   const flightShortEmissions = flightShort * EMISSION_FACTORS.flight.short;
 
-  const flightLong = Number(inputs.flightLong) || 0;
+  const flightLong = Number(safeInputs.flightLong) || 0;
   const flightLongEmissions = flightLong * EMISSION_FACTORS.flight.long;
 
   const transport = carEmissions + busEmissions + trainEmissions + flightShortEmissions + flightLongEmissions;
 
   // 2. Home Energy
-  const elecMonthly = Number(inputs.electricity) || 0; // monthly kWh
+  const elecMonthly = Number(safeInputs.electricity) || 0; // monthly kWh
   const elecEmissions = elecMonthly * 12 * EMISSION_FACTORS.electricity;
 
-  const gasMonthly = Number(inputs.gas) || 0; // monthly kWh
+  const gasMonthly = Number(safeInputs.gas) || 0; // monthly kWh
   const gasEmissions = gasMonthly * 12 * EMISSION_FACTORS.gas;
 
-  const wasteWeekly = Number(inputs.waste) || 0; // weekly kg
+  const wasteWeekly = Number(safeInputs.waste) || 0; // weekly kg
   const rawWasteEmissions = wasteWeekly * 52 * EMISSION_FACTORS.waste;
   
   // Recycling reduction: scales up to 50% max reduction based on recycle rate
-  const recycleRate = Math.min(Math.max(Number(inputs.recycleRate) || 0, 0), 100);
+  const recycleRate = Math.min(Math.max(Number(safeInputs.recycleRate) || 0, 0), 100);
   const wasteEmissions = rawWasteEmissions * (1 - (recycleRate / 100) * 0.5);
 
   const energy = elecEmissions + gasEmissions + wasteEmissions;
 
   // 3. Food
-  const dietType = inputs.diet || 'average';
+  const dietType = safeInputs.diet || 'average';
   const food = EMISSION_FACTORS.diet[dietType] || EMISSION_FACTORS.diet.average;
 
   // 4. Lifestyle & Shopping
-  const clothingItems = Number(inputs.clothing) || 0; // items / year
+  const clothingItems = Number(safeInputs.clothing) || 0; // items / year
   const clothingEmissions = clothingItems * EMISSION_FACTORS.clothing;
 
-  const electronicsItems = Number(inputs.electronics) || 0; // items / year
+  const electronicsItems = Number(safeInputs.electronics) || 0; // items / year
   const electronicsEmissions = electronicsItems * EMISSION_FACTORS.electronics;
 
   const lifestyle = clothingEmissions + electronicsEmissions;

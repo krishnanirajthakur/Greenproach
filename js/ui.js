@@ -87,12 +87,14 @@ function setupTheme() {
   const savedTheme = localStorage.getItem('gp_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   document.documentElement.setAttribute('data-theme', savedTheme);
   
-  toggle.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('gp_theme', newTheme);
-  });
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('gp_theme', newTheme);
+    });
+  }
 }
 
 // 2. Main Render Function
@@ -109,41 +111,48 @@ function renderProfile() {
   // Dashboard view
   const welcomeMsg = document.getElementById('welcome-message');
   const results = db.getLatestResults();
+  const descEl = document.querySelector('.dashboard-hero-card .desc');
   
-  if (results) {
-    welcomeMsg.textContent = `Level ${profile.level} Eco Champion!`;
-    document.querySelector('.dashboard-hero-card .desc').textContent = 
-      `Lifetime carbon saved: ${profile.lifetimeCarbonSaved.toFixed(1)} kg CO2e. You have unlocked ${profile.badges.length} badges!`;
-  } else {
-    welcomeMsg.textContent = `Welcome to Greenproach!`;
-    document.querySelector('.dashboard-hero-card .desc').textContent = 
-      "Take a carbon footprint audit to generate personalized insights.";
+  if (welcomeMsg) {
+    if (results) {
+      welcomeMsg.textContent = `Level ${profile.level} Eco Champion!`;
+      if (descEl) {
+        descEl.textContent = `Lifetime carbon saved: ${profile.lifetimeCarbonSaved.toFixed(1)} kg CO2e. You have unlocked ${profile.badges.length} badges!`;
+      }
+    } else {
+      welcomeMsg.textContent = `Welcome to Greenproach!`;
+      if (descEl) {
+        descEl.textContent = "Take a carbon footprint audit to generate personalized insights.";
+      }
+    }
   }
 
   // Render Badges
   const badgesRow = document.getElementById('profile-badges-row');
-  badgesRow.innerHTML = '';
-  
-  if (profile.badges.length === 0) {
-    const defaultBadge = document.createElement('span');
-    defaultBadge.className = 'badge-pill';
-    defaultBadge.textContent = '🌱 Green Recruit';
-    badgesRow.appendChild(defaultBadge);
-  } else {
-    profile.badges.forEach(badge => {
-      const badgeSpan = document.createElement('span');
-      badgeSpan.className = 'badge-pill';
-      
-      let icon = '🏅';
-      if (badge === 'Eco Starter') icon = '🌱';
-      if (badge === 'Carbon Fighter') icon = '⚡';
-      if (badge === 'Planet Guardian') icon = '🌳';
-      if (badge === 'Habit Master') icon = '💪';
-      if (badge === 'Carbon Sage') icon = '🧠';
+  if (badgesRow) {
+    badgesRow.innerHTML = '';
+    
+    if (profile.badges.length === 0) {
+      const defaultBadge = document.createElement('span');
+      defaultBadge.className = 'badge-pill';
+      defaultBadge.textContent = '🌱 Green Recruit';
+      badgesRow.appendChild(defaultBadge);
+    } else {
+      profile.badges.forEach(badge => {
+        const badgeSpan = document.createElement('span');
+        badgeSpan.className = 'badge-pill';
+        
+        let icon = '🏅';
+        if (badge === 'Eco Starter') icon = '🌱';
+        if (badge === 'Carbon Fighter') icon = '⚡';
+        if (badge === 'Planet Guardian') icon = '🌳';
+        if (badge === 'Habit Master') icon = '💪';
+        if (badge === 'Carbon Sage') icon = '🧠';
 
-      badgeSpan.textContent = `${icon} ${badge}`;
-      badgesRow.appendChild(badgeSpan);
-    });
+        badgeSpan.textContent = `${icon} ${badge}`;
+        badgesRow.appendChild(badgeSpan);
+      });
+    }
   }
 
   // Habits view
@@ -164,26 +173,30 @@ function updateScoreDial(totalKg) {
   const scoreVal = document.getElementById('score-value');
   const fillCircle = document.getElementById('score-fill');
 
-  scoreVal.textContent = tonnes;
+  if (scoreVal) {
+    scoreVal.textContent = tonnes;
+  }
 
-  // Paris Agreement Individual Target is 2.0 tonnes.
-  // We set dial maximum scale to 15.0 tonnes.
-  const maxTonnes = 15.0;
-  const percentage = Math.min(tonnes / maxTonnes, 1);
-  
-  // Circumference of circle with r=100 is 2 * PI * 100 = 628
-  const offset = 628 - (percentage * 628);
-  fillCircle.style.strokeDashoffset = offset;
+  if (fillCircle) {
+    // Paris Agreement Individual Target is 2.0 tonnes.
+    // We set dial maximum scale to 15.0 tonnes.
+    const maxTonnes = 15.0;
+    const percentage = Math.min(tonnes / maxTonnes, 1);
+    
+    // Circumference of circle with r=100 is 2 * PI * 100 = 628
+    const offset = 628 - (percentage * 628);
+    fillCircle.style.strokeDashoffset = offset;
 
-  // Color gradient adaptation
-  if (tonnes <= 2.0) {
-    fillCircle.style.stroke = 'var(--success)';
-  } else if (tonnes <= 6.0) {
-    fillCircle.style.stroke = 'var(--primary)';
-  } else if (tonnes <= 10.0) {
-    fillCircle.style.stroke = 'var(--warning)';
-  } else {
-    fillCircle.style.stroke = 'var(--danger)';
+    // Color gradient adaptation
+    if (tonnes <= 2.0) {
+      fillCircle.style.stroke = 'var(--success)';
+    } else if (tonnes <= 6.0) {
+      fillCircle.style.stroke = 'var(--primary)';
+    } else if (tonnes <= 10.0) {
+      fillCircle.style.stroke = 'var(--warning)';
+    } else {
+      fillCircle.style.stroke = 'var(--danger)';
+    }
   }
 }
 
@@ -194,13 +207,17 @@ function renderDashboardCharts() {
 
   const categoryWrapper = document.getElementById('category-chart-wrapper');
   const historyWrapper = document.getElementById('history-chart-wrapper');
+  const breakdownTotal = document.getElementById('breakdown-total');
+  const historyCount = document.getElementById('history-count');
+
+  if (!categoryWrapper || !historyWrapper) return;
 
   // Chart 1: Donut breakdown
   if (!results || results.total === 0) {
     categoryWrapper.innerHTML = `<div class="score-label">Calculate your footprint to unlock your carbon breakdown.</div>`;
-    document.getElementById('breakdown-total').textContent = '0 kg total';
+    if (breakdownTotal) breakdownTotal.textContent = '0 kg total';
   } else {
-    document.getElementById('breakdown-total').textContent = `${(results.total / 1000).toFixed(1)} t total`;
+    if (breakdownTotal) breakdownTotal.textContent = `${(results.total / 1000).toFixed(1)} t total`;
     
     // Calculate category percentages
     const categories = [
@@ -270,9 +287,9 @@ function renderDashboardCharts() {
   // Chart 2: History logs
   if (history.length === 0) {
     historyWrapper.innerHTML = `<div class="score-label">No history logs. Calculate your carbon footprint to populate logs!</div>`;
-    document.getElementById('history-count').textContent = '0 logs';
+    if (historyCount) historyCount.textContent = '0 logs';
   } else {
-    document.getElementById('history-count').textContent = `${history.length} logs`;
+    if (historyCount) historyCount.textContent = `${history.length} logs`;
     
     // Limit to latest 6 logs for display spacing
     const displayLogs = history.slice(-6);
@@ -348,11 +365,13 @@ function setupCalculatorForm() {
   const btnNext = document.getElementById('btn-next-step');
   const btnSubmit = document.getElementById('btn-submit-calc');
 
+  if (!form || !btnPrev || !btnNext || !btnSubmit) return;
+
   let currentStepIndex = 0;
 
   // Load existing inputs if any to prefill
   const existingInputs = db.getLatestInputs();
-  if (existingInputs) {
+  if (existingInputs && form.elements) {
     Object.keys(existingInputs).forEach(key => {
       const field = form.elements[key];
       if (field) {
@@ -458,7 +477,6 @@ function renderHabitsList() {
   if (!container) return;
 
   container.innerHTML = '';
-  const adopted = db.getAdoptedHabits();
   const completions = db.getHabitCompletions();
   const today = new Date().toISOString().split('T')[0];
 
@@ -578,11 +596,14 @@ function setupInsightsSimulator() {
 
   const lblSaved = document.getElementById('sim-saved-total');
 
+  if (!simCar || !simPlant || !simTherm || !simFlights || !lblCar || !lblPlant || !lblTherm || !lblFlights || !lblSaved) {
+    return;
+  }
+
   function calculateSimulation() {
     // 1. Car reduction: user reduces car driving by X km/week.
     // Carbon saved/year = km/week * 52 weeks * emission factor (petrol car default or current car)
     const kmSavedPerWeek = Number(simCar.value);
-    const results = db.getLatestResults();
     const inputs = db.getLatestInputs();
     
     let carFactor = 0.170; // Petrol default
@@ -628,11 +649,14 @@ function setupInsightsSimulator() {
 function setupQuiz() {
   const container = document.getElementById('quiz-options-container');
   const questionText = document.getElementById('quiz-question-text');
-  const quizCard = document.getElementById('quiz-card');
   const scoreContainer = document.getElementById('quiz-score-container');
   const questionBox = document.getElementById('quiz-question-container');
   const scoreText = document.getElementById('quiz-score-text');
   const btnRestart = document.getElementById('btn-restart-quiz');
+
+  if (!container || !questionText || !scoreContainer || !questionBox || !scoreText || !btnRestart) {
+    return;
+  }
 
   let currentQuestionIdx = 0;
   let score = 0;

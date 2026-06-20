@@ -232,7 +232,8 @@ nav.main-nav button.active {
   margin-right: auto;
 }
 
-.hero h1 {
+.hero h1,
+.hero h2 {
   font-size: 3rem;
   font-weight: 800;
   margin-bottom: 12px;
